@@ -38,7 +38,7 @@ pipeline {
         }
     }
     post {
-        always {
+        success {
             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             echo ' I will always say hello'
         }
