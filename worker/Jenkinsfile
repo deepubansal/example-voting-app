@@ -5,6 +5,7 @@ pipeline {
     }
     stages {
         stage("build") {
+            when { changeset "worker/**" }
             steps{
                  echo 'Building worker project'
                  dir ("worker") {
@@ -13,6 +14,7 @@ pipeline {
             }
         }
         stage("test") {
+            when { changeset "worker/**" }
             steps{
                  echo 'Testing worker Project'
                  dir ("worker") {
@@ -21,6 +23,11 @@ pipeline {
             }
         }
         stage("package") {
+            when { 
+                allOf {
+                    changeset "worker/**" ; branch 'master'
+                }
+            }
             steps{
                  echo 'Packaging Worker project'
                  dir ("worker") {
