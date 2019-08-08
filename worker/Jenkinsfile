@@ -36,12 +36,12 @@ pipeline {
                      sh 'mvn package'
 
                  }
+                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
     }
     post {
         success {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             echo ' I will always say hello'
         }
     }
