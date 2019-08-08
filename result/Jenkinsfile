@@ -1,0 +1,25 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:8.16-alpine'
+        }
+    }
+    stages {
+        stage("build") {
+            steps{
+                 echo 'Building Result project'
+                 dir ("result") {
+                     sh 'npm install'
+                 }
+            }
+        }
+        stage("test") {
+            steps{
+                 echo 'Testing Result Project'
+                 dir ("result") {
+                     sh 'npm test'
+                 }
+            }
+        }
+    }
+}

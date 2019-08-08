@@ -1,0 +1,48 @@
+pipeline {
+    agent{
+        docker {
+            image 'maven:3.6.1-jdk-8-slim'
+            args '-v m2cache:/root/.m2'
+        }
+    }
+    stages {
+        stage("build") {
+            when { changeset "worker/**" }
+            steps{
+                 echo 'Building worker project'
+                 dir ("worker") {
+                     sh 'mvn compile'
+                 }
+            }
+        }
+        stage("test") {
+            when { changeset "worker/**" }
+            steps{
+                 echo 'Testing worker Project'
+                 dir ("worker") {
+                     sh 'mvn test'
+                 }
+            }
+        }
+        stage("package") {
+            when { 
+                allOf {
+                    changeset "worker/**" ; branch 'master'
+                }
+            }
+            steps{
+                 echo 'Packaging Worker project'
+                 dir ("worker") {
+                     sh 'mvn package'
+
+                 }
+                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            }
+        }
+    }
+    post {
+        success {
+            echo ' I will always say hello'
+        }
+    }
+}
